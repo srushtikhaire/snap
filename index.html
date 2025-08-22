@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snap – Login</title>
+  <style>
+    :root {
+      --snap-yellow: #fffc00;
+      --ink: #0f172a; /* slate-900 */
+      --ink-2: #334155; /* slate-600 */
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --accent: #000000;
+      --ring: rgba(15, 23, 42, 0.2);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--ink);
+      background: linear-gradient(180deg, var(--snap-yellow), #fff78a 60%, #fffdf1 100%);
+    }
+
+    .grid {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+    }
+
+    @media (max-width: 980px){
+      .grid { grid-template-columns: 1fr; }
+      .hero { display: none; }
+    }
+
+    .hero {
+      display: grid;
+      place-items: center;
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ghost {
+      width: clamp(140px, 30vw, 260px);
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,.18));
+      transform: translateY(-6px);
+    }
+
+    .badge {
+      position: absolute;
+      bottom: 24px; left: 24px;
+      background: rgba(255,255,255,.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0,0,0,.06);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .panel {
+      display: grid;
+      place-items: center;
+      padding: clamp(24px, 5vw, 48px);
+    }
+
+    .card {
+      width: min(520px, 92vw);
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 20px 60px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.06);
+      padding: clamp(20px, 4vw, 34px);
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .brand svg { width: 34px; height: 34px; }
+    .brand h1 { font-size: 24px; margin: 0; letter-spacing: .3px; }
+    .muted { color: var(--ink-2); font-size: 14px; }
+
+    form { margin-top: 12px; display: grid; gap: 14px; }
+
+    .field {
+      display: grid; gap: 6px;
+    }
+
+    label { font-size: 14px; font-weight: 600; }
+
+    .control {
+      position: relative;
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface-2);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 12px;
+      padding: 12px 14px 12px 44px;
+    }
+
+    .control input {
+      border: 0; outline: 0; background: transparent;
+      width: 100%;
+      font-size: 16px;
+      color: var(--ink);
+    }
+
+    .icon {
+      position: absolute; left: 12px;
+      width: 22px; height: 22px; opacity: .85;
+    }
+
+    .toggle {
+      position: absolute; right: 12px; cursor: pointer; border: 0; background: transparent;
+    }
+
+    .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+
+    .checkbox { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+    .checkbox input { width: 16px; height: 16px; }
+
+    .btn {
+      width: 100%;
+      appearance: none;
+      border: 0;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 6px 20px rgba(0,0,0,.15);
+    }
+
+    .btn:focus-visible, .control:focus-within { box-shadow: 0 0 0 4px var(--ring); }
+
+    .alt {
+      margin-top: 10px;
+      display: grid; gap: 10px;
+    }
+
+    .oauth {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,.12);
+      background: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .links { margin-top: 14px; display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
+    .links a { color: var(--ink); text-decoration: none; font-weight: 600; }
+    .links a:hover { text-decoration: underline; }
+
+    .fineprint { margin-top: 14px; font-size: 12px; color: var(--ink-2); line-height: 1.5; }
+
+    footer { margin-top: 18px; font-size: 12px; color: var(--ink-2); text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <!-- Left: playful ghost/brand area -->
+    <section class="hero" aria-hidden="true">
+      <!-- Simple “ghost” emblem in SVG (original art) -->
+      <svg class="ghost" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ghost emblem">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#fff"/>
+            <stop offset="1" stop-color="#f1f5f9"/>
+          </linearGradient>
+        </defs>
+        <path d="M64 10c-21 0-38 17-38 38v20c0 3-2 5-5 7-2 1-2 4-1 6 1 2 4 3 6 2 2-1 5-2 8-2 4 0 8 1 12 3 5 2 10 4 16 4s11-2 16-4c4-2 8-3 12-3 3 0 6 1 8 2 2 1 5 0 6-2 1-2 1-5-1-6-3-2-5-4-5-7V48C102 27 85 10 64 10z" fill="url(#g)" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="48" cy="56" r="5" fill="#0f172a"/>
+        <circle cx="80" cy="56" r="5" fill="#0f172a"/>
+        <path d="M50 76c4 3 8 5 14 5s10-2 14-5" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <div class="badge">Welcome back ?</div>
+    </section>
+
+    <!-- Right: login card -->
+    <section class="panel">
+      <div class="card" role="dialog" aria-labelledby="title" aria-describedby="subtitle">
+        <div class="brand">
+          <!-- Mini ghost mark -->
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8 2 5 5 5 9v3c0 1-1 2-2 3-.5.5-.4 1.4.2 1.8.5.3 1 .2 1.5 0 .9-.4 2-.8 3.3-.8 1.5 0 2.8.5 4.1 1 1.3-.5 2.6-1 4.1-1 1.3 0 2.4.4 3.3.8.5.2 1 .3 1.5 0 .6-.4.7-1.3.2-1.8-1-1-2-2-2-3V9c0-4-3-7-7-7Z" fill="#0f172a"/></svg>
+          <h1 id="title">Sign in to Snap</h1>
+        </div>
+        <p id="subtitle" class="muted">Use your username or email to continue.</p>
+
+        <form id="loginForm" novalidate>
+          <!-- Username / Email -->
+          <div class="field">
+            <label for="username">Username or Email</label>
+            <div class="control">
+              <!-- user icon -->
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z" fill="#0f172a"/>
+              </svg>
+              <input id="username" name="username" type="text" placeholder="snapfan123 or you@example.com" autocomplete="username" required />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="control">
+              <!-- lock icon -->
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M17 10h-1V8a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2Zm-7-2a2 2 0 0 1 4 0v2H10Zm7 11H7v-7h10Z" fill="#0f172a"/>
+              </svg>
+              <input id="password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
+              <button class="toggle" type="button" aria-label="Show password" id="togglePw">
+                <!-- eye icon -->
+                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 5C7 5 3 9 2 12c1 3 5 7 10 7s9-4 10-7c-1-3-5-7-10-7Zm0 11a4 4 0 1 1 4-4 4 4 0 0 1-4 4Z" fill="#0f172a"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="checkbox"><input type="checkbox" id="remember"/> Remember me</label>
+            <a href="#" class="muted" aria-label="Forgot your password?">Forgot password?</a>
+          </div>
+
+          <button class="btn" type="submit">Sign in</button>
+
+          <div class="alt">
+            <div class="oauth">
+              <button class="btn-ghost" type="button" aria-label="Continue with Google">
+                <!-- Google G -->
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.35 11.1h-9.9v2.9h5.8c-.25 1.5-1.76 4.4-5.8 4.4a6.7 6.7 0 1 1 0-13.4 5.85 5.85 0 0 1 4.14 1.62l2-1.93A8.75 8.75 0 0 0 11.45 2 9.95 9.95 0 1 0 21.35 12c0-.6-.06-1-.1-1Z" fill="#0f172a"/></svg>
+                Continue with Google
+              </button>
+              <button class="btn-ghost" type="button" aria-label="Continue with Apple">
+                <!-- Apple -->
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 13.4c0 3.3 2.9 4.4 3 4.5-.1.4-.5 1.6-1.4 2.9-.8 1.2-1.7 2.3-3 2.3s-1.6-.7-3.1-.7-2 .7-3.1.7-2.1-1.1-3-2.3C5.5 20.5 4 16.8 4 14.2c0-3.4 2.2-5.2 4.3-5.2 1.1 0 2 .8 2.6.8.6 0 1.7-.9 3-.9 2.2 0 3.6 1.7 3.6 4.4ZM14.8 5.3C15.5 4.4 16 3.1 15.8 2c-1 .1-2.2.7-2.9 1.6-.7.8-1.3 2.1-1.1 3.3 1.1.1 2.3-.6 3-1.6Z" fill="#0f172a"/></svg>
+                Continue with Apple
+              </button>
+            </div>
+            <div class="links">
+              <a href="#">Create new account</a>
+              <a href="#">Help</a>
+            </div>
+          </div>
+
+          <p class="fineprint">This is a demo login page with symbols/icons created using inline SVG. Replace the submit handler with your own authentication logic.</p>
+        </form>
+
+        <footer>By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</footer>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const togglePw = document.getElementById('togglePw');
+    const pwInput = document.getElementById('password');
+
+    togglePw.addEventListener('click', () => {
+      const open = pwInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      pwInput.setAttribute('type', open);
+      togglePw.setAttribute('aria-label', open === 'text' ? 'Hide password' : 'Show password');
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const payload = Object.fromEntries(data.entries());
+      // Demo only – replace with real auth call
+      alert(`Username: ${payload.username}\nPassword: ${payload.password}\nRemember: ${document.getElementById('remember').checked}`);
+    });
+  </script>
+</body>
+</html>
